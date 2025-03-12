@@ -23,6 +23,7 @@ letter.forEach((f) => console.log(f));
 
 console.log("");
 
+// for...of
 for(const f of letter) {
     console.log(f);
 }
