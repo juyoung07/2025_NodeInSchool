@@ -3,8 +3,8 @@ function printString (a) {
 }
 printString('a');
 
-// 익명함수
-anonymousFunction = function (a) {
+// 화살표 함수
+anonymousFunction = (a) => {
     console.log('anonymousFunction ' + a);
 }
 anonymousFunction('swag');
