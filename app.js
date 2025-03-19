@@ -1,20 +1,9 @@
 const express = require('express');
 const app = express();
+const swagRoutes = require('./routes/swag');
 
 app.use(express.json());
-
-app.get('/swag', (req, res) => {
-  res.status(200).send('get swag');
-});
-
-app.post('/swag', (req, res) => {
-  res.status(201).send('post swag');
-});
-
-app.get('/swag/:person', (req, res) => {
-  const person = req.params.person;
-  res.status(200).send(person);
-});
+app.use('/swag', swagRoutes);
   
   // 서버 실행 (포트 3000)
 app.listen(3000, () => {
