@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
 
+app.use(express.json());
+
 // 루트 경로 ('/') 요청에 대한 응답
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
+app.post('/swag', (req, res) => {
+    res.send(req.body);
   });
   
   // 서버 실행 (포트 3000)
