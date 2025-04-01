@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
-const mysql = require('mysql2')
-
+const mysql = require('mysql2');
 require('dotenv').config();
 
 const app = express();
@@ -10,8 +9,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));  // __dirname : 현재 디렉토리의 절대 경로, path.join : 경로 지정자를 운영체제에 맞춰줌
 
 console.log(path.join(__dirname, 'views'));
-
-const travelList = ['뉴욕', '파리', '서울', '도쿄'];
 
 const db = mysql.createConnection({
   host : process.env.DB_HOST,
@@ -33,7 +30,16 @@ app.get('/', (req, res) => {
 });
 
 app.get('/travel', (req, res) => {
-  res.render('travel', {travelList})
+  const query = 'SELECT id, name FROM travelList';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('디비 쿼리 실패 : ', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    const travelList = result; 
+    res.render('travel', {travelList});
+  });
 });
 
 app.use((req, res) => {
