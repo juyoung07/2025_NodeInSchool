@@ -31,14 +31,29 @@ app.get('/', (req, res) => {
 
 app.get('/travel', (req, res) => {
   const query = 'SELECT id, name FROM travelList';
-  db.query(query, (err, result) => {
+  db.query(query, (err, results) => {
     if (err) {
       console.error('디비 쿼리 실패 : ', err);
-      res.status(500).send('Internal Server Error');
-      return;
+      return res.status(500).send('Internal Server Error');
     }
-    const travelList = result; 
+    const travelList = results; 
     res.render('travel', {travelList});
+  });
+});
+
+app.get('/travel/:id', (req, res) => {
+  const travelId = req.params.id;
+  const query = 'SELECT * FROM travelList WHERE id = ? ';
+  db.query(query, [travelId], (err, results) => {
+    if (err) {
+      console.error('디비 쿼리 실패 : ', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    if (results.length === 0) {
+      return res.status(404).send('여행지를 찾을 수 없습니다.');
+    }
+    const travel = results[0];   // 배열에서 꺼내기
+    res.render('travelDetail', {travel});
   });
 });
 
