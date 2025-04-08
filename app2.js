@@ -1,10 +1,13 @@
 const express = require('express');
 const path = require('path');
 const mysql = require('mysql2');
+const methodOverride = require('method-override');
+
 require('dotenv').config();
 
 const app = express();
 
+app.use(methodOverride('_method'))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -89,7 +92,21 @@ app.put('/travel/:id', (req, res) => {
     
     res.render('updatedSuccess');
   })
-})
+});
+
+app.get('/travel/:id/edit', (req, res) => {
+  const travelId = req.params.id;
+  const query = 'SELECT * FROM travelList WHERE id = ? ';
+  db.query(query, [travelId], (err, results) => {
+    if (err) {
+      console.error('디비 쿼리 실패 : ', err);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    const travel = results[0];
+    res.render('editTravel', {travel});
+  });
+});
 
 app.use((req, res) => {
   res.status(404);
