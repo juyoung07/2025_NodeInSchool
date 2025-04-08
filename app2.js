@@ -5,6 +5,9 @@ require('dotenv').config();
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));  // __dirname : 현재 디렉토리의 절대 경로, path.join : 경로 지정자를 운영체제에 맞춰줌
 
@@ -56,6 +59,20 @@ app.get('/travel/:id', (req, res) => {
     res.render('travelDetail', {travel});
   });
 });
+
+app.post('/travel', (req, res) => {
+  const {name} = req.body;
+  const query = 'INSERT INTO travelList (name) VALUE (?)';
+  db.query(query, [name], (err, results) => {
+    if (err) {
+      console.error('디비 쿼리 실패 : ', err);
+      return res.status(500).send('Internal Server Error');
+    }
+    
+    res.redirect('/travel');
+  })
+});
+
 
 app.use((req, res) => {
   res.status(404);
