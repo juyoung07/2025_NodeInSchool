@@ -77,6 +77,19 @@ app.get('/add-travel', (req, res) => {
   res.render('addTravel');
 });
 
+app.put('/travel/:id', (req, res) => {
+  const travelId = req.params.id;
+  const { name } = req.body;
+  const query = 'UPDATE travelList SET name=? WHERE id=?';
+  db.query(query, [name, travelId], (err, results) => {
+    if (err) {
+      console.error('디비 쿼리 실패 : ', err);
+      return res.status.apply(500).send('Internal Server Error');
+    }
+    
+    res.render('updatedSuccess');
+  })
+})
 
 app.use((req, res) => {
   res.status(404);
