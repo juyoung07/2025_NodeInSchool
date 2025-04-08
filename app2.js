@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));  // __dirname : 현재 디렉토리의 절대 경로, path.join : 경로 지정자를 운영체제에 맞춰줌
 
-console.log(path.join(__dirname, 'views'));
+console.log(path.join(__dirname, 'views')); 
 
 const db = mysql.createConnection({
   host : process.env.DB_HOST,
@@ -71,6 +71,10 @@ app.post('/travel', (req, res) => {
     
     res.redirect('/travel');
   })
+});
+
+app.get('/add-travel', (req, res) => {
+  res.render('addTravel');
 });
 
 
