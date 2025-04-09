@@ -108,6 +108,19 @@ app.get('/travel/:id/edit', (req, res) => {
   });
 });
 
+app.delete('/travel/:id', (req, res) => {
+  const travelId = req.params.id;
+  const query = 'DELETE FROM travelList WHERE id=?';
+  db.query(query, [travelId], (err, results) => {
+    if (err) {
+      console.error('디비 쿼리 실패 : ', err);
+      return res.status.apply(500).send('Internal Server Error');
+    }
+    
+    res.render('deletedSuccess');
+  })
+});
+
 app.use((req, res) => {
   res.status(404);
 });
