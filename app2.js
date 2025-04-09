@@ -121,8 +121,10 @@ app.delete('/travel/:id', (req, res) => {
   })
 });
 
+// 전체 메소드 + 모든 경로
+// 위의 엔드포인트에 해당하지 않으면 유효하지 않는 페이지로 간주 
 app.use((req, res) => {
-  res.status(404);
+  res.status(404).send('Not found');
 });
 
 app.listen(3001, () => {
