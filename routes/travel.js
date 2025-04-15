@@ -2,19 +2,6 @@ const express = require("express");
 const router = express.Router();
 const db = require("../database/database");
 
-// 생성
-router.post("/", (req, res) => {
-  const { name } = req.body;
-  const query = "INSERT INTO travelList (name) VALUE (?)";
-  db.query(query, [name], (err, results) => {
-    if (err) {
-      console.error("디비 쿼리 실패 : ", err);
-      return res.status(500).send("Internal Server Error");
-    }
-
-    res.redirect("/travel");
-  });
-});
 
 // 모든 여행지 조회
 router.get("/", (req, res) => {
@@ -26,6 +13,25 @@ router.get("/", (req, res) => {
     }
     const travelList = results;
     res.render("travel", { travelList });
+  });
+});
+
+// addTravel 페이지 보기
+router.get("/add", (req, res) => {
+  res.render("addTravel");
+});
+
+// 게시글 생성
+router.post("/", (req, res) => {
+  const { name } = req.body;
+  const query = "INSERT INTO travelList (name) VALUE (?)";
+  db.query(query, [name], (err, results) => {
+    if (err) {
+      console.error("디비 쿼리 실패 : ", err);
+      return res.status(500).send("Internal Server Error");
+    }
+
+    res.redirect("/travel");
   });
 });
 
@@ -46,10 +52,6 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// addTravel 페이지 보기
-router.get("/add", (req, res) => {
-  res.render("addTravel");
-});
 
 router.get("/:id/edit", (req, res) => {
   const travelId = req.params.id;
