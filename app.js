@@ -7,9 +7,9 @@ require('dotenv').config();
 const travelRouter = require('./routes/travel');
 const app = express();
 
-app.use(methodOverride('_method'))
+app.use(methodOverride('_method'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));  // __dirname : 현재 디렉토리의 절대 경로, path.join : 경로 지정자를 운영체제에 맞춰줌
