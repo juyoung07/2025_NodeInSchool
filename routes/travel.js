@@ -1,13 +1,12 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../database/database");
+const Travel = require('../models/Travel');
+const { where } = require('sequelize');
 
 // 모든 여행지 조회
 router.get("/", async (req, res) => {
   try {
-    const query = "SELECT id, name FROM travelList";
-    const [results] = await db.query(query);
-    const travelList = results;
+    const travelList = await Travel.findAll({attributes: ['id', 'name']});
 
     res.render("travel", { travelList });
   } catch (err) {
@@ -25,8 +24,7 @@ router.get("/add", (req, res) => {
 router.post("/", async (req, res) => {
   const { name } = req.body;
   try {
-    const query = "INSERT INTO travelList (name) VALUE (?)";
-     await db.query(query, [name]);
+    await Travel.create({name});
 
     res.redirect("/travel");
   } catch (err) {
@@ -39,12 +37,12 @@ router.post("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const travelId = req.params.id;
-    const query = "SELECT * FROM travelList WHERE id = ? ";
-    const results = await db.query(query, travelId);
-    if (results.length === 0) {
+    const travel = await Travel.findByPk(travelId);
+
+    if (!travel) {
       return res.status(404).send('여행지를 찾을 수 없습니다.')
     }
-    const travel = results[0]
+
     res.render("travelDetail", { travel });
   } catch (err) {
     return res.status(500).send("Internal Server Error");
@@ -54,9 +52,7 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/edit", async (req, res) => {
   try {
     const travelId = req.params.id;
-    const query = "SELECT * FROM travelList WHERE id = ? ";
-    const [results] = await db.query(query, travelId);
-    const travel = results[0];
+    const travel = await Travel.findByPk(travelId);
 
     res.render("editTravel", { travel });
   } catch (err) {
@@ -68,9 +64,14 @@ router.get("/:id/edit", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const travelId = req.params.id;
+    const travel = await Travel.findByPk(travelId);
+
+    if (!travel) {
+      return res.status(404).send('여행지를 찾을 수 없습니다.')
+    }
+    
     const { name } = req.body;
-    const query = "UPDATE travelList SET name=? WHERE id=?";
-    await db.query(query, [name, travelId]);
+    await travel.update({ name })
 
     res.render("updatedSuccess");
   } catch (err) {
@@ -82,8 +83,13 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const travelId = req.params.id;
-    const query = "DELETE FROM travelList WHERE id=?";
-    await db.query(query, travelId);
+    const travel = await Travel.findByPk(travelId);
+
+    if (!travel) {
+      return res.status(404).send('여행지를 찾을 수 없습니다.')
+    }
+
+    await travel.destroy();
 
     res.render("deletedSuccess");
   } catch (err) {
